@@ -27,7 +27,10 @@ const generalData = sequelize.define(
         Sede:{
             type: DataTypes.STRING,
         },
-        DateTime:{
+        Date:{
+            type: DataTypes.STRING,
+        },
+        Time:{
             type: DataTypes.STRING,
         },
         ClientName:{

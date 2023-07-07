@@ -14,6 +14,18 @@ const validatorGeneralData = [
               }
            })
      }),
+    check("Name"),
+    check("PhoneNumber"),
+    check("Ticket"),
+    check("BackupEquipment"),
+    check("AddressSede"),
+    check("Sede"),
+    check("Date"),
+    check("Time"),
+    check("ClientName"),
+    check("ClientPhoneNumber"),
+    check("Requirement"),
+    check("Observation"),
     check("idUser")
     .notEmpty(),
     (req, res, next) => {
@@ -21,4 +33,12 @@ const validatorGeneralData = [
     }
 ];
 
-module.exports = {validatorGeneralData};
+const validatorGetGeneralData = [
+    check("idUser")
+    .notEmpty(),
+    (req, res, next) => {
+        return validateResults(req, res, next)
+    }
+];
+
+module.exports = {validatorGeneralData,validatorGetGeneralData};
