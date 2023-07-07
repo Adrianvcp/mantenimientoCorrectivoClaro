@@ -1,9 +1,9 @@
 const express = require("express");
-const { getItems,createItem } = require("../controllers/generalData");
+const { getInformes,createInforme } = require("../controllers/generalData");
 const router = express.Router();
 const { validatorGeneralData } = require("../validators/generalData");
 
-router.get("/", getItems);
-router.post("/" ,validatorGeneralData,createItem);
+router.get("/", getInformes);
+router.post("/" ,validatorGeneralData,createInforme);
 
 module.exports = router;
