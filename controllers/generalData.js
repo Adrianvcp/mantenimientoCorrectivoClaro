@@ -1,6 +1,6 @@
-const {generalDataModel} = require('../models');
+const { generalDataModel, imagenModel } = require("../models");
 const { matchedData } = require("express-validator");
-const { handleHttpError } = require('../utils/handleError');
+const { handleHttpError } = require("../utils/handleError");
 
 const getInformeFilter = async (req, res) => {
   try {
@@ -44,16 +44,49 @@ const getInformeFilter = async (req, res) => {
   }
 };
 
-const createInforme = async (req, res) => {
-    try {
-      req = matchedData(req);
-      const data = await generalDataModel.create(req);
-      
-      res.send({ data });
-    } catch (e) {
-      console.log(e)
-      handleHttpError(res, "ERROR_CREATE_INFORME");
+const getInformeByCID = async (req, res) => {
+  try {
+    const body = req.body;
+    const options = {
+      where: {},
+      include: [
+        {
+          model: imagenModel,
+          as: "imagen",
+        },
+      ],
+    };
+
+    if (body.CID !== undefined) {
+      options.where.CID = body.CID;
     }
+
+    const data = await generalDataModel.findAll(options);
+
+    const result = data.reduce((accumulator, item) => {
+      const { imagen, ...generalData } = item.toJSON();
+      const imagenList = [imagen];
+      accumulator.imagen = [...(accumulator.imagen || []), ...imagenList];
+      return {  ...generalData,...accumulator };
+    }, {});
+
+    res.send({ data: result });
+  } catch (e) {
+    console.log(e);
+    handleHttpError(res, "ERROR_GET_INFORME");
+  }
 };
-  
-module.exports = {getInformeFilter,createInforme};
+
+const createInforme = async (req, res) => {
+  try {
+    req = matchedData(req);
+    const data = await generalDataModel.create(req);
+
+    res.send({ data });
+  } catch (e) {
+    console.log(e);
+    handleHttpError(res, "ERROR_CREATE_INFORME");
+  }
+};
+
+module.exports = { getInformeFilter, getInformeByCID,createInforme };

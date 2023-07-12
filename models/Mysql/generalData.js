@@ -54,4 +54,5 @@ const generalData = sequelize.define(
         timestamps: false,
     }
 );
+
 module.exports = generalData; 

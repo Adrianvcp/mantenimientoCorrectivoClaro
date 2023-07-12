@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const{dbConnectMySql} = require("./config/mysql")
+const{conexionFTP} = require("./config/ftp")
 const app = express();
 
 app.use(cors());
@@ -12,7 +13,7 @@ const port = process.env.PORT || 3000;
 app.use("/api",require("./routes"))
 
 app.listen(port,() => {
-    console.log('http://localhost:'+port)
+    console.log('Connecting to http://localhost:'+port)
 });
 
 dbConnectMySql();
