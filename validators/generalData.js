@@ -2,26 +2,36 @@ const { check } = require("express-validator");
 const validateResults = require("../utils/handleValidator");
 const { generalDataModel } = require("../models");
 
-const validatorGeneralData = [
+const validatorCreateGeneralData = [
+    check("id_tipo_trabajo")
+    .notEmpty(),
+    check("idUser")
+    .notEmpty(),
+    (req, res, next) => {
+        return validateResults(req, res, next)
+    }
+];
+
+const validatorUpdateGeneralData = [
+    check("id")
+    .notEmpty(),
+    (req, res, next) => {
+        return validateResults(req, res, next)
+    }
+];
+
+const validatorOthersCIDGeneralData = [
+    check("id")
+    .notEmpty(),
     check("CID")
-    .notEmpty()
-    .custom(value => {
-        return generalDataModel.findOne({ where: {CID: value} })
-           .then((res) => {
-                if(res==null){
-              }else{
-                return Promise.reject('CID existe')
-              }
-           })
-     }),
+    .notEmpty(),
     check("Name"),
     check("PhoneNumber"),
     check("Ticket"),
     check("BackupEquipment"),
     check("AddressSede"),
     check("Sede"),
-    check("Date"),
-    check("Time"),
+    check("DateTime"),
     check("ClientName"),
     check("ClientPhoneNumber"),
     check("Requirement"),
@@ -41,4 +51,4 @@ const validatorGetGeneralData = [
     }
 ];
 
-module.exports = {validatorGeneralData,validatorGetGeneralData};
+module.exports = {validatorCreateGeneralData,validatorUpdateGeneralData,validatorOthersCIDGeneralData,validatorGetGeneralData};

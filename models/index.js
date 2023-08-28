@@ -4,20 +4,32 @@ const imagenModel = require('./Mysql/imagen');
 const models = {
     userModel: require('./Mysql/user'),
     imagenModel: require('./Mysql/imagen'),
-    generalDataModel: require('./Mysql/generalData')
+    generalDataModel: require('./Mysql/generalData'),
+    descripcionModel: require('./Mysql/descripcion')
 }
 
 // Definición de la relación entre GeneralData y imagenModel
-generalDataModel.belongsTo(imagenModel, {
-  foreignKey: 'CID',
-  targetKey: 'CID',
-  as: 'imagen' // Cambiar el alias para reflejar el singular
-});
+// imagenModel.hasMany(generalDataModel, {
+//   foreignKey: 'id',
+//   sourceKey: 't_general_data_id',
+//   as: 'generalData' 
+// });
 
-imagenModel.hasMany(generalDataModel, {
-  foreignKey: 'CID',
-  sourceKey: 'CID',
-  as: 'generalData' // Cambiar el alias para reflejar el plural
+// generalDataModel.belongsTo(imagenModel, {
+//   foreignKey: 'id',
+//   targetKey: 't_general_data_id',
+//   as: 'imagen' 
+// });
+
+//Relacion 
+generalDataModel.hasMany(imagenModel,{
+  foreignKey: "t_general_data_id",
+  as: 'imagen' 
+});
+//Relacion 
+imagenModel.belongsTo(generalDataModel,{
+  foreignKey: "t_general_data_id",
+  as: 'generalData'
 });
 
 module.exports = models

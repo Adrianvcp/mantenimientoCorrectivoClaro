@@ -7,6 +7,8 @@ const ftpConfig = {
   password: process.env.FTP_PASSWORD,
 };
 
+let ftpClient = null;
+
 const conexionFTP = () => {
   return new Promise((resolve, reject) => {
     const client = new Client();
@@ -24,6 +26,31 @@ const conexionFTP = () => {
     client.connect(ftpConfig);
   });
 };
+
+// const conexionFTP = () => {
+//     return new Promise((resolve, reject) => {
+//       if (ftpClient === null || !ftpClient?.connected){
+//         console.log('conexion vacia, se esta creando');
+//         ftpClient = new Client();
+    
+//         ftpClient.on("ready", () => {
+//           console.log("FTP Conexión Correcta!");
+//           resolve(ftpClient);
+//         });
+    
+//         ftpClient.on("error", (err) => {
+//           console.log("FTP Error de Conexión", err);
+//           reject(err);
+//         });
+    
+//         ftpClient.connect(ftpConfig);
+//       }else{
+//         console.log('conexion ya creada');
+
+//         resolve(ftpClient)
+//       }
+//     });
+// };
 
 const uploadToFTP = async (imageBuffer, destinationPath) => {
   const client = await conexionFTP();

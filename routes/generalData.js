@@ -1,10 +1,11 @@
 const express = require("express");
-const { getInformeFilter,getInformeByCID,createInforme } = require("../controllers/generalData");
+const { getInformeFilter,getInformeByCID,createInforme,updateInforme } = require("../controllers/generalData");
 const router = express.Router();
-const { validatorGeneralData,validatorGetGeneralData } = require("../validators/generalData");
+const { validatorCreateGeneralData,validatorUpdateGeneralData,validatorGetGeneralData } = require("../validators/generalData");
 
-router.get("/list", getInformeFilter);
-router.get("/informe" ,getInformeByCID);
-router.post("/create" ,validatorGeneralData,createInforme);
+router.post("/list",getInformeFilter);
+router.post("/informe",getInformeByCID);
+router.post("/create",validatorCreateGeneralData,createInforme);
+router.patch("/update",validatorUpdateGeneralData,updateInforme);
 
 module.exports = router;
