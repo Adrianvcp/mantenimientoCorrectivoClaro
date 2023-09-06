@@ -5,6 +5,7 @@ const fs = require("fs");
 const Client = require("ftp");
 const { v4: uuidv4 } = require("uuid");
 const { conexionFTP } = require('../config/ftp');
+const { uploadFile } = require('../config/ftp');
 
 const findById = async (req, res) => {
   try {
@@ -23,30 +24,55 @@ const findById = async (req, res) => {
   }
 };
 
+
 const saveImage = async (req, res) => {
   try {
+    console.log("1. EN SAVEIMAGE");
     const imageFile = req.file;
     const uniqueId = uuidv4();
 
-    const requiredFields = ["t_general_data_id", "CID", "Nivel1", "Description","nro_imagen","createdAt"];
-    const missingFields = requiredFields.filter(field => !req.body[field]);
+    const requiredFields = [
+      "t_general_data_id",
+      "CID",
+      "Nivel1",
+      "Description",
+      "nro_imagen",
+      "createdAt",
+    ];
+    const missingFields = requiredFields.filter((field) => !req.body[field]);
 
     if (missingFields.length > 0) {
       const missingFieldsMsg = missingFields.join(", ");
-      console.log(`Falta dato(s): ${missingFieldsMsg}`)
-      return res.status(400).json({ error: `Falta dato(s): ${missingFieldsMsg}` });
+      console.log(`Falta dato(s): ${missingFieldsMsg}`);
+      return res
+        .status(400)
+        .json({ error: `Falta dato(s): ${missingFieldsMsg}` });
     }
+    console.log("2. DESPUES DE VALIDACIONES");
 
-    const { t_general_data_id, CID, Nivel1, Nivel2, Description,nro_imagen,createdAt } = req.body;
+    const {
+      t_general_data_id,
+      CID,
+      Nivel1,
+      Nivel2,
+      Description,
+      nro_imagen,
+      createdAt,
+    } = req.body;
 
     if (!imageFile) {
-      return res.status(400).json({ error: "No se ha proporcionado ninguna imagen" });
+      return res
+        .status(400)
+        .json({ error: "No se ha proporcionado ninguna imagen" });
     }
 
+    console.log("3. POR ENTRAR A UPLOADTOSFTP");
 
-    // Guardar la imagen en el servidor FTP
-    await uploadToFTP(imageFile.buffer, `${CID}/${uniqueId}.png`);
-    
+    // Subir el archivo al servidor FTP
+    await uploadFile(imageFile.buffer, `${CID}/${uniqueId}.png`);
+
+    // await uploadToFTP(imageFile.buffer, `${CID}/${uniqueId}.png`);
+
     // Crear un objeto con los datos de la imagen
     const newImageData = {
       t_general_data_id,
@@ -57,17 +83,17 @@ const saveImage = async (req, res) => {
       Description,
       nro_imagen: nro_imagen,
       createdAt: createdAt,
-      eliminacion_logica: 0
+      eliminacion_logica: 0,
     };
 
     // Guardar información de la imagen en la base de datos
     const newImage = await imagenModel.create(newImageData);
 
     return res.status(200).json({
-      message: 'Imagen guardada exitosamente en el servidor FTP y la base de datos',
+      message:
+        "Imagen guardada exitosamente en el servidor FTP y la base de datos",
       image: newImage,
     });
-
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Error al guardar la imagen" });
