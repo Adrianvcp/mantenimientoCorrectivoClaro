@@ -6,6 +6,7 @@ const Client = require("ftp");
 const { v4: uuidv4 } = require("uuid");
 // const { uploadToFTP } = require("../config/ftp");
 const { uploadFile } = require("../config/ftp");
+const moment = require('moment-timezone');
 
 const findById = async (req, res) => {
   try {
@@ -36,7 +37,7 @@ const saveImage = async (req, res) => {
       "Nivel1",
       "Description",
       "nro_imagen",
-      "createdAt",
+      // "createdAt",
     ];
     const missingFields = requiredFields.filter((field) => !req.body[field]);
 
@@ -56,7 +57,7 @@ const saveImage = async (req, res) => {
       Nivel2,
       Description,
       nro_imagen,
-      createdAt,
+      // createdAt,
     } = req.body;
 
     if (!imageFile) {
@@ -68,11 +69,13 @@ const saveImage = async (req, res) => {
     console.log("3. POR ENTRAR A UPLOADTOSFTP");
 
     // Subir el archivo al servidor FTP
+    // await uploadFile(imageFile.buffer, `${CID}/${uniqueId}.png`);
+
     await uploadFile(imageFile.buffer, `${CID}/${uniqueId}.png`);
 
-    // await uploadToFTP(imageFile.buffer, `${CID}/${uniqueId}.png`);
-
     // Crear un objeto con los datos de la imagen
+    const zone = 'America/Lima';
+
     const newImageData = {
       t_general_data_id,
       CID,
@@ -81,10 +84,18 @@ const saveImage = async (req, res) => {
       URL: `${CID}/${uniqueId}.png`,
       Description,
       nro_imagen: nro_imagen,
-      createdAt: createdAt,
+      // createdAt: moment().tz(zone).format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
       eliminacion_logica: 0,
     };
 
+    // imagenModel.beforeCreate((imagen, opciones) => {
+    //   const fechaAjustada = moment().tz(zone);
+    //   imagen.createdAt = fechaAjustada.format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+    //   console.log(fechaAjustada);
+    //   console.log(imagen);
+    // });
+
+    // console.log(newImageData);
     // Guardar información de la imagen en la base de datos
     const newImage = await imagenModel.create(newImageData);
 
@@ -151,8 +162,6 @@ const editImage = async (req, res) => {
     URL,
     Description,
     nro_imagen,
-    createdAt,
-    updatedAt,
     } = req.body;
     const updatedData = {
       t_general_data_id,
@@ -162,8 +171,6 @@ const editImage = async (req, res) => {
       URL,
       Description,
       nro_imagen,
-      createdAt,
-      updatedAt,
     }; 
 
 

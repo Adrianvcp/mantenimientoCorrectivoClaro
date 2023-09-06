@@ -1,5 +1,6 @@
 const { sequelize } = require("../../config/mysql");
 const { DataTypes } = require("sequelize");
+const moment = require('moment-timezone');
 
 const Imagen = sequelize.define(
     "T_Imagen",
@@ -42,11 +43,27 @@ const Imagen = sequelize.define(
         }
     },
     {
-        timestamps: true,
+        timestamps: false,
         tableName: "T_Imagen",
 
     },
 );
+
+// Hook beforeCreate para ajustar createdAt a una zona horaria específica
+Imagen.beforeCreate((imagen, opciones) => {
+    const zonaHorariaDeseada = 'America/Lima';
+    const fechaAjustada = moment().tz(zonaHorariaDeseada).format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
+    imagen.createdAt = fechaAjustada;
+});
+
+// Hook beforeCreate para ajustar updatedAt a una zona horaria específica
+Imagen.beforeUpdate((imagen, opciones) => {
+    const zonaHorariaDeseada = 'America/Lima';
+    const fechaAjustada = moment().tz(zonaHorariaDeseada).format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
+    imagen.updatedAt = fechaAjustada;
+});
+
+
 
 
 
