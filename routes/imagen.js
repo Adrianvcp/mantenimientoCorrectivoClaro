@@ -11,7 +11,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 router.post("/byCID",validatorLogin, findById);
-router.post("/saveImage",upload.single('image'), validateAndCreateFolder,saveImage);
+router.post("/saveImage",upload.single('image'),saveImage);
 router.post("/deleteImage",deleteImage);
 router.patch("/editImage",editImage);
 
